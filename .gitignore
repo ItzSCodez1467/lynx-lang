@@ -183,3 +183,6 @@ pyrightconfig.json
 !.vscode/extensions.json
 .history/
 *.code-workspace
+
+# Custom Ignores
+test.lynx
