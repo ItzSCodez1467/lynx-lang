@@ -166,6 +166,18 @@ class Lexer:
             self.advance()
             return Token(TokenType.DIVIDE, '/', startLn, startCol)
 
+        # MODULO
+        if self.current == '%':
+            startLn, startCol = self.ln, self.col
+            self.advance()
+            return Token(TokenType.MODULO, '%', startLn, startCol)
+        
+        # EXPONENT
+        if self.current == '^':
+            startLn, startCol = self.ln, self.col
+            self.advance()
+            return Token(TokenType.EXPONENT, '^', startLn, startCol)
+
         # ASSIGNMENT
         if self.current == '=' and self.peek() != '=':
             startLn, startCol = self.ln, self.col
