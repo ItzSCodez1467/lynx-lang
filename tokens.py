@@ -11,6 +11,7 @@ class TokenType(Enum):
     IDENTIFIER = 'IDENTIFIER'
     KEYWORD = 'KEYWORD'
     BOOL = 'BOOL'
+    ARRAY = 'ARRAY'
 
     PLUS = 'PLUS'
     MINUS = 'MINUS'
@@ -52,16 +53,23 @@ class Token:
         self.ln = ln
         self.col = col
 
-    def serialize(self):
-        return dumps({
+    def to_dict(self):
+        if isinstance(self.value, Token):
+            val = self.value.to_dict()
+        elif isinstance(self.value, list):
+            val = [v.to_dict() if isinstance(v, Token) else v for v in self.value]
+        else:
+            val = self.value
+
+        return {
             'type': self.type.value,
-            'value': self.value,
+            'value': val,
             'ln': self.ln,
             'col': self.col
-        })
+        }
     
     def __repr__(self):
-        return str(self.serialize())
+        return str(self.to_dict())
 
 class TokenStream:
     def __init__(self, tokens, filepath):
@@ -86,7 +94,7 @@ class TokenStream:
 
     def serialize(self):
         return dumps({
-            'tokens': [token.serialize() for token in self.tokens],
+            'tokens': [token.to_dict() for token in self.tokens],
             'filepath': self.filepath
         })
     

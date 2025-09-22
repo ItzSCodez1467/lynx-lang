@@ -53,8 +53,8 @@ class Lexer:
             id_ += self.current
             self.advance()
 
-        if id_ == 'True': return Token(TokenType.BOOL, True, startLn, startCol)
-        elif id_ == 'False': return Token(TokenType.BOOL, False, startLn, startCol)
+        if id_ == 'true': return Token(TokenType.BOOL, True, startLn, startCol)
+        elif id_ == 'false': return Token(TokenType.BOOL, False, startLn, startCol)
         else:
             if id_ in keywords:
                 return Token(TokenType.KEYWORD, id_, startLn, startCol)
@@ -132,6 +132,15 @@ class Lexer:
         # IDENTIFIER / KEYWORD / BOOL
         if self.current.isalpha() or self.current == '_':
             return self.makeIdentifierKW()
+        
+        # ARRAY
+        if self.current == '[':
+            startLn, startCol = self.ln, self.col
+            self.advance()
+            elements = []
+            while self.current is not None and self.current != ']': elements.append(self.lex())
+            self.advance()  # Skip the closing bracket
+            return Token(TokenType.ARRAY, elements, startLn, startCol)
 
         # PLUS
         if self.current == '+' and self.peek() != '+':
@@ -311,4 +320,4 @@ class Lexer:
 if __name__ == '__main__':
     lexer = Lexer('test.lynx')
     token_stream = lexer.tokenize()
-    print(token_stream) 
+    print(token_stream.__repr__()) 
