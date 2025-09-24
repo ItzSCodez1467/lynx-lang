@@ -138,8 +138,15 @@ class Lexer:
             startLn, startCol = self.ln, self.col
             self.advance()
             elements = []
-            while self.current is not None and self.current != ']': elements.append(self.lex())
-            self.advance()  # Skip the closing bracket
+            while self.current is not None and self.current != ']':
+                elem = self.lex()
+                elements.append(elem)
+                self.skipIrrelevant()
+                if self.current == ',':
+                    self.advance()
+                    self.skipIrrelevant()
+                elif self.current != ']': error(self.filepath, self.ln, 'Comma expected after array element', 'Check your syntax')
+            self.advance() # Skip ']'
             return Token(TokenType.ARRAY, elements, startLn, startCol)
 
         # PLUS
@@ -327,9 +334,3 @@ class Lexer:
             tokens.append(token)
             if token.type == TokenType.EOF: break
         return TokenStream(tokens, self.filepath)
-    
-### TESTING ###
-if __name__ == '__main__':
-    lexer = Lexer('test.lynx')
-    token_stream = lexer.tokenize()
-    print(token_stream.__repr__()) 

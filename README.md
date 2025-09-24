@@ -7,6 +7,17 @@
 
 ![Logo](assets/logo.svg)
 
+## Grammer
+
+```
+factor -> INT
+        | FLOAT
+        | STRING
+        | IDENTIFIER
+        | BOOL
+        | ARRAY
+        | '(' EXPR ')'
+```
 
 ## Authors
 
